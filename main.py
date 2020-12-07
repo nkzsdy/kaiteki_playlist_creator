@@ -3,7 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.common.by import By
 import re
-import gkeepapi
+#import gkeepapi
 
 # scraping
 options = webdriver.ChromeOptions()
@@ -17,9 +17,11 @@ wait = WebDriverWait(driver, 10)
 
 on_air_date = wait.until(expected_conditions.visibility_of_element_located((By.XPATH, '//*[@id="ProgramContents"]/div/div[1]/div[2]/time')))
 on_air_date = on_air_date.get_attribute('datetime')
+print(on_air_date)
 
 program_title = wait.until(expected_conditions.visibility_of_element_located((By.CLASS_NAME, 'program-title')))
 program_title = program_title.text
+print(program_title)
 
 playlist = wait.until(expected_conditions.visibility_of_element_located((By.XPATH, '//*[@id="ProgramContents"]/div/div[2]/p[2]')))
 playlist = playlist.text
@@ -40,6 +42,10 @@ for line in playlist.splitlines():
 
     song_metadata_str += line
 
+for item in song_metadata_array:
+    print(item)
+
 driver.quit()
 
 # TODO: create Google Keep note
+# なんかgkeepapiの不具合でうまくいかないのでkeep使うか再検討
