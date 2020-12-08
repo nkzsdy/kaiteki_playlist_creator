@@ -23,29 +23,40 @@ program_title = wait.until(expected_conditions.visibility_of_element_located((By
 program_title = program_title.text
 print(program_title)
 
-playlist = wait.until(expected_conditions.visibility_of_element_located((By.XPATH, '//*[@id="ProgramContents"]/div/div[2]/p[2]')))
-playlist = playlist.text
+try:
+    playlist = wait.until(expected_conditions.visibility_of_element_located((By.XPATH, '//*[@id="ProgramContents"]/div/div[2]/p[2]')))
+except Exception as e:
+    print('[ERROR] 要素が存在しない、またはタイムアウトになりました。')
+    print(e)
+else:
+    playlist = playlist.text
 
-song_metadata_str = ''
-song_metadata_array = []
-song_length_pattern = re.compile('^（\d分\d+秒）$')
-song_media_standard_number_pattern = re.compile('^＜.+＞$')
+    song_metadata_str = ''
+    song_metadata_array = []
+    song_length_pattern = re.compile('^（\d分\d+秒）$')
+    song_media_standard_number_pattern = re.compile('^＜.+＞$')
 
-for line in playlist.splitlines():
-    if len(line) == 0 or line == playlist[-1]:
-        song_metadata_array.append(song_metadata_str)
-        song_metadata_str = ''
-        continue
+    for line in playlist.splitlines():
+        if len(line) == 0 or line == playlist[-1]:
+            song_metadata_array.append(song_metadata_str)
+            song_metadata_str = ''
+            continue
 
-    if song_length_pattern.match(line) or song_media_standard_number_pattern.match(line):
-        continue
+        if song_length_pattern.match(line) or song_media_standard_number_pattern.match(line):
+            continue
 
-    song_metadata_str += line
+        song_metadata_str += line
 
-for item in song_metadata_array:
-    print(item)
+    for item in song_metadata_array:
+        print(item)
+    driver.quit()
 
-driver.quit()
 
+#if 'on_air_date' in locals() and 'program_title' in locals() and 'song_metadata_array' in locals() :
 # TODO: create Google Keep note
 # なんかgkeepapiの不具合でうまくいかないのでkeep使うか再検討
+# ブラウザ操作でkeepの作成までいけないか試してみる
+driver = webdriver.Chrome(options=options)
+driver.get('https://keep.google.com')
+
+driver.quit()
